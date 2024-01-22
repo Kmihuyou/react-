@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { Layout, Menu, Button, theme } from "antd";
+import { Outlet, useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 const { Header, Sider, Content } = Layout;
 const App = () => {
+  const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
   const {
     token: { colorBgContainer, borderRadiusLG },
@@ -10,19 +13,26 @@ const App = () => {
   const menu = JSON.parse(localStorage.getItem("user_menus"));
   console.log(menu);
   // label, key, children
-  let i = 1;
-  const items = (menu) => {
+
+  const items = (arr) => {
     let itemsarr = [];
-    menu.forEach((item, index) => {
-      // console.log(index);
+    for (let i = 0; i < arr.length; i++) {
       itemsarr.push({
-        label: item.meta.title,
-        key: i++,
-        children: item.children ? items(item.children) : null,
+        label: arr[i].meta.title,
+        key: arr[i].path,
+        children: arr[i].children ? items(arr[i].children) : null,
       });
-      // console.log(item.meta.title);
-      // item;
-    });
+    }
+    // menu.forEach((item) => {
+    //   // console.log(index);
+    //   itemsarr.push({
+    //     label: item.meta.title,
+    //     key: item.path,
+    //     children: item.children ? items(item.children) : null,
+    //   });
+    //   // console.log(item.meta.title);
+    //   // item;
+    // });
     return itemsarr;
   };
   const cc = items(menu);
@@ -36,6 +46,13 @@ const App = () => {
           mode="inline"
           defaultSelectedKeys={["1"]}
           items={cc}
+          onClick={(e) => {
+            if (e.keyPath[0].includes("/")) {
+              e.keyPath[0] = e.keyPath[0].slice(1);
+            }
+            console.log(e);
+            navigate(e.keyPath.reverse().join("/"));
+          }}
         />
       </Sider>
       <Layout>
@@ -64,7 +81,10 @@ const App = () => {
             background: colorBgContainer,
             borderRadius: borderRadiusLG,
           }}
-        ></Content>
+        >
+          主页
+          <Outlet />
+        </Content>
       </Layout>
     </Layout>
   );

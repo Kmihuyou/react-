@@ -1,5 +1,5 @@
 import React from "react";
-const user = () => {
+const menu = () => {
   return (
     <div>
       <h1>...menu</h1>
@@ -7,4 +7,4 @@ const user = () => {
   );
 };
 
-export default user;
+export default menu;

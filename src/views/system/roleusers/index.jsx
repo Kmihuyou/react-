@@ -1,5 +1,5 @@
 import React from "react";
-const user = () => {
+const roleusers = () => {
   return (
     <div>
       <h1>...roleusers</h1>
@@ -7,4 +7,4 @@ const user = () => {
   );
 };
 
-export default user;
+export default roleusers;

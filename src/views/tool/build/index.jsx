@@ -1,10 +1,10 @@
 import React from "react";
-const dept = () => {
+const build = () => {
   return (
     <div>
-      <h1>...dept</h1>
+      <h1>...build</h1>
     </div>
   );
 };
 
-export default dept;
+export default build;

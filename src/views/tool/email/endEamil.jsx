@@ -1,10 +1,10 @@
 import React from "react";
-const dept = () => {
+const email = () => {
   return (
     <div>
-      <h1>...dept</h1>
+      <h1>...email</h1>
     </div>
   );
 };
 
-export default dept;
+export default email;
