@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { Layout, Menu, Button, theme } from "antd";
 import { Outlet, useNavigate } from "react-router-dom";
-// import { useNavigate } from "react-router-dom";
+
 const { Header, Sider, Content } = Layout;
 const App = () => {
   const navigate = useNavigate();
@@ -11,7 +11,7 @@ const App = () => {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
   const menu = JSON.parse(localStorage.getItem("user_menus"));
-  console.log(menu);
+  // console.log(menu);
   // label, key, children
 
   const items = (arr) => {
@@ -23,22 +23,12 @@ const App = () => {
         children: arr[i].children ? items(arr[i].children) : null,
       });
     }
-    // menu.forEach((item) => {
-    //   // console.log(index);
-    //   itemsarr.push({
-    //     label: item.meta.title,
-    //     key: item.path,
-    //     children: item.children ? items(item.children) : null,
-    //   });
-    //   // console.log(item.meta.title);
-    //   // item;
-    // });
     return itemsarr;
   };
   const cc = items(menu);
-  console.log(cc);
+  // console.log(cc);
   return (
-    <Layout className="h-[100vh]">
+    <Layout>
       <Sider trigger={null} collapsible collapsed={collapsed}>
         <div className="demo-logo-vertical" />
         <Menu
@@ -50,7 +40,7 @@ const App = () => {
             if (e.keyPath[0].includes("/")) {
               e.keyPath[0] = e.keyPath[0].slice(1);
             }
-            console.log(e);
+            // console.log(e);
             navigate(e.keyPath.reverse().join("/"));
           }}
         />
@@ -74,15 +64,16 @@ const App = () => {
           />
         </Header>
         <Content
+          className=" overflow-auto"
           style={{
             margin: "24px 16px",
             padding: 24,
             minHeight: 280,
             background: colorBgContainer,
             borderRadius: borderRadiusLG,
+            height: "calc(100vh - 112px)",
           }}
         >
-          主页
           <Outlet />
         </Content>
       </Layout>

@@ -1,10 +1,10 @@
 import React from "react";
-const concomitants = () => {
+const Concomitants = () => {
   return (
     <div>
-      <h1>...concomitants</h1>
+      <h1>concomitants</h1>
     </div>
   );
 };
 
-export default concomitants;
+export default Concomitants;

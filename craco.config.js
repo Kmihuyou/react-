@@ -8,7 +8,7 @@ module.exports = {
   },
   devServer: {
     client: {
-      overlay: true,
+      overlay: false,
     },
     proxy: {
       "/api": {

@@ -1,10 +1,10 @@
 import React from "react";
-const symptoms = () => {
+const config = () => {
   return (
     <div>
-      <h1>...symptoms</h1>
+      <h1>...config</h1>
     </div>
   );
 };
 
-export default symptoms;
+export default config;
