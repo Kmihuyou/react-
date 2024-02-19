@@ -48,31 +48,24 @@
 // export default Cards;
 
 import React, { useState, useEffect } from "react";
-import useUserStore from "@/store/user"; //数据获取
 import {
   Input,
-  Tooltip,
   Button,
   Table,
   Form,
   InputNumber,
   Popconfirm,
   Typography,
-  Select,
-  TimePicker,
-  Tree,
 } from "antd";
 import {
-  PlusOutlined,
   SearchOutlined,
   RedoOutlined,
   EditOutlined,
   DeleteOutlined,
   CheckCircleOutlined,
   CloseCircleOutlined,
-  DownOutlined,
 } from "@ant-design/icons";
-import { getdept } from "@/service/index";
+import { getcardlist, deletecards } from "@/service/index";
 const EditableCell = ({
   editing,
   dataIndex,
@@ -107,40 +100,20 @@ const EditableCell = ({
     </td>
   );
 };
-const User = () => {
+const Cards = () => {
   const [form] = Form.useForm();
   const [data, setData] = useState([]);
   const [editingKey, setEditingKey] = useState("");
   const [loading, setLoading] = useState(false);
   const [datainput, setDatainput] = useState([]);
   const isEditing = (record) => record.key === editingKey;
-  // 树形控件
-  const onSelect = (selectedKeys, info) => {
-    console.log("selected", selectedKeys, info);
-  };
   // const valueinput = ''
-  const userStore = useUserStore();
-  // console.log(userStore.setInfAsync());
-  const items = (arr) => {
-    let num = 1;
-    let itemsarr = [];
-    for (let i = 0; i < arr.length; i++) {
-      itemsarr.push({
-        title: arr[i]?.deptName,
-        key: num++,
-        children: arr[i].children ? items(arr[i].children) : null,
-      });
-    }
-    return itemsarr;
-  };
-  const treeData = items(userStore.user.info);
-  console.log(treeData);
   // 编译表格
   const getcards = (search = "") => {
     setLoading(true);
-    getdept()
+    getcardlist({ Bodypart: search, pageSize: 99 })
       .then((res) => {
-        console.log(res.data.data);
+        console.log(res.data.data.result);
         // const Data = res.data.data.result.map((item, index) => {
         //   return {
         //     key: item.id,
@@ -163,9 +136,6 @@ const User = () => {
     });
     setEditingKey(record.key);
   };
-  const handleChange = (value) => {
-    console.log(`selected ${value}`);
-  };
   //取消
   const cancel = () => {
     setEditingKey("");
@@ -173,9 +143,9 @@ const User = () => {
   // 删除
   const handleDelete = (key) => {
     console.log(key);
-    // deletecards(key).catch((res) => {
-    //   console.log(res);
-    // });
+    deletecards(key).catch((res) => {
+      console.log(res);
+    });
     const newData = data.filter((item) => item.key !== key);
     setData(newData);
   };
@@ -203,51 +173,39 @@ const User = () => {
   };
   const columns = [
     {
-      title: "编号",
+      title: "ID",
       dataIndex: "key",
-      width: "10%",
+      width: "11%",
       editable: true,
     },
     {
-      title: "用户名称",
+      title: "卡号",
       dataIndex: "name",
-      width: "10%",
+      width: "20%",
       editable: true,
     },
     {
-      title: "用户昵称",
+      title: "卡类型",
       dataIndex: "name",
-      width: "10%",
+      width: "11%",
       editable: true,
     },
     {
-      title: "头像",
+      title: "用户ID",
       dataIndex: "num",
-      width: "10%",
+      width: "11%",
       editable: true,
     },
     {
-      title: "部门",
+      title: "绑定时间",
       dataIndex: "address",
-      width: "10%",
-      editable: true,
-    },
-    {
-      title: "手机号码",
-      dataIndex: "address",
-      width: "15%",
-      editable: true,
-    },
-    {
-      title: "用户状态",
-      dataIndex: "address",
-      width: "10%",
+      width: "20%",
       editable: true,
     },
     {
       title: "操作",
       dataIndex: "operation",
-      // width: "10%",
+      width: "20%",
       render: (_, record) => {
         const editable = isEditing(record);
         return editable ? (
@@ -335,123 +293,61 @@ const User = () => {
   }, []);
 
   return (
-    <div className="flex">
-      <div className="w-[10%] min-w-[120px] h-[75vh] overflow-auto">
+    <div>
+      <div>
+        <span>卡号:</span>
         <Input
-          placeholder="请输入部门名称"
-          prefix={<SearchOutlined />}
-          suffix={<Tooltip title="请输入部门名称" />}
-          className="w-[90%]"
+          className="w-[200px] ml-[20px]"
+          value={datainput}
+          onChange={(e) => setDatainput(e.target.value)}
         />
-        <Tree
-          showLine
-          switcherIcon={<DownOutlined />}
-          defaultExpandedKeys={["0-0-0"]}
-          onSelect={onSelect}
-          treeData={treeData}
+        <Button
+          type="primary"
+          className="mx-[10px]"
+          danger
+          icon={<SearchOutlined />}
+          onClick={() => {}}
+        >
+          搜索
+        </Button>
+
+        <Button onClick={() => {}} icon={<RedoOutlined />}>
+          重置
+        </Button>
+      </div>
+      <div className="mt-[20px] mb-[10px] flex">
+        <Button
+          type="primary"
+          danger
+          ghost
+          className="ml-[10px]"
+          icon={<EditOutlined />}
+        >
+          解绑
+        </Button>
+      </div>
+      <Form form={form} component={false}>
+        <Table
+          rowSelection={{
+            ...rowSelection,
+          }}
+          components={{
+            body: {
+              cell: EditableCell,
+            },
+          }}
+          bordered
+          dataSource={data}
+          columns={mergedColumns}
+          rowClassName="editable-row"
+          loading={loading}
+          pagination={{
+            onChange: cancel,
+          }}
         />
-      </div>
-      <div className="w-[90%] min-w-[715px]">
-        <div className="mb-[15px]">
-          <span className="mr-[10px]">用户名称</span>
-          <Input
-            className="w-[200px]"
-            value={datainput}
-            onChange={(e) => setDatainput(e.target.value)}
-            suffix={<Tooltip title="请输入用户名称" />}
-          />
-          <span className="mx-[10px]">手机号码</span>
-          <Input
-            className="w-[200px]"
-            suffix={<Tooltip title="请输入手机号码" />}
-          />
-          <span className="mx-[10px]">状态</span>
-          <Select
-            defaultValue="用户状态"
-            style={{
-              width: 120,
-            }}
-            onChange={handleChange}
-            options={[
-              {
-                value: "true",
-                label: "true",
-              },
-              {
-                value: "false",
-                label: "false",
-              },
-            ]}
-          />
-        </div>
-        <div>
-          <span className="mr-[10px]">创建时间</span>
-          <TimePicker.RangePicker />
-          <Button
-            type="primary"
-            className="mx-[10px]"
-            danger
-            icon={<SearchOutlined />}
-            onClick={() => {}}
-          >
-            搜索
-          </Button>
-          <Button onClick={() => {}} icon={<RedoOutlined />}>
-            重置
-          </Button>
-        </div>
-        <div className="mt-[20px] mb-[10px] flex">
-          <Button
-            type="primary"
-            danger
-            ghost
-            className="mr-[10px]"
-            icon={<PlusOutlined />}
-          >
-            新增
-          </Button>
-          <Button
-            type="primary"
-            danger
-            ghost
-            className="mr-[10px]"
-            icon={<EditOutlined />}
-          >
-            修改
-          </Button>
-          <Button
-            type="primary"
-            danger
-            ghost
-            className="mr-[10px]"
-            icon={<DeleteOutlined />}
-          >
-            解绑
-          </Button>
-        </div>
-        <Form form={form} component={false}>
-          <Table
-            rowSelection={{
-              ...rowSelection,
-            }}
-            components={{
-              body: {
-                cell: EditableCell,
-              },
-            }}
-            bordered
-            dataSource={data}
-            columns={mergedColumns}
-            rowClassName="editable-row"
-            loading={loading}
-            pagination={{
-              onChange: cancel,
-            }}
-          />
-        </Form>
-      </div>
+      </Form>
     </div>
   );
 };
 
-export default User;
+export default Cards;

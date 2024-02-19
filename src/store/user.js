@@ -2,6 +2,7 @@
 import { persist } from "zustand/middleware";
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
+import queru from "@/utils/http";
 
 // create返回值是一个hook函数
 const useUserStore = create(
@@ -10,22 +11,19 @@ const useUserStore = create(
       // create的回调函数的返回值 (对象) 是状态
       return {
         user: {
-          name: "simon",
-          age: "18",
-          info: {},
+          info: [],
+          data: [],
         },
-        firname: "cc",
         async setInfAsync() {
-          // const res = await axios.post("")
-        },
-        setUserAge() {
+          const getdept = await queru.get("/api/system/dept/list");
           set((state) => {
-            state.user.age++;
+            state.user.info = getdept.data.data;
           });
         },
-        setUserName(name) {
+        async setInfAsyncc() {
+          const getdepts = await queru.get("/api/system/dept/treeselect");
           set((state) => {
-            state.user.name = `${get().firname} ${name}`;
+            state.user.data = getdepts.data.data;
           });
         },
       };
@@ -33,4 +31,5 @@ const useUserStore = create(
     { name: "user-store" }
   )
 );
+
 export default useUserStore;

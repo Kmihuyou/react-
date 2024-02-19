@@ -11,13 +11,13 @@ import {
 import {
   SearchOutlined,
   RedoOutlined,
-  PlusOutlined,
   EditOutlined,
   DeleteOutlined,
   CheckCircleOutlined,
   CloseCircleOutlined,
 } from "@ant-design/icons";
-import { getBodypartslist } from "@/service/index";
+import { getBodypartslist, elletebody } from "@/service/index";
+import Add from "@/components/add";
 const EditableCell = ({
   editing,
   dataIndex,
@@ -57,6 +57,7 @@ const Config = () => {
   const [data, setData] = useState([]);
   const [editingKey, setEditingKey] = useState("");
   const [loading, setLoading] = useState(false);
+  const [datainput, setDatainput] = useState([]);
   const isEditing = (record) => record.key === editingKey;
   // const valueinput = ''
   // 编译表格
@@ -64,7 +65,7 @@ const Config = () => {
     setLoading(true);
     getBodypartslist({ Bodypart: search, pageSize: 99 })
       .then((res) => {
-        console.log(res.data.data.result);
+        // console.log(res.data.data.result);
         const Data = res.data.data.result.map((item, index) => {
           return {
             key: item.id,
@@ -93,6 +94,10 @@ const Config = () => {
   };
   // 删除
   const handleDelete = (key) => {
+    console.log(key);
+    elletebody(key).catch((res) => {
+      console.log(res);
+    });
     const newData = data.filter((item) => item.key !== key);
     setData(newData);
   };
@@ -163,6 +168,7 @@ const Config = () => {
               className=" text-red-500 hover:-text-red-700"
               title="要取消么?"
               okText="Yes"
+              okType="default"
               cancelText="No"
               onConfirm={cancel}
             >
@@ -180,14 +186,12 @@ const Config = () => {
               <EditOutlined />
               编译
             </span>
-            <span
-              className="ml-[10px] hover:text-orange-400"
-              onClick={() => console.log(111)}
-            >
+            <span className="ml-[10px] hover:text-orange-400">
               <DeleteOutlined />
               <Popconfirm
                 title="要删除么?"
                 okText="Yes"
+                okType="default"
                 cancelText="No"
                 onConfirm={() => handleDelete(record.key)}
               >
@@ -237,24 +241,33 @@ const Config = () => {
     <div>
       <div>
         <span>部位:</span>
-        <Input className="w-[200px] ml-[20px]" />
+        <Input
+          className="w-[200px] ml-[20px]"
+          value={datainput}
+          onChange={(e) => setDatainput(e.target.value)}
+        />
         <Button
           type="primary"
           className="mx-[10px]"
           danger
           icon={<SearchOutlined />}
-          onClick={() => {}}
+          onClick={() => getbody(datainput)}
         >
           搜索
         </Button>
 
-        <Button icon={<RedoOutlined />}>重置</Button>
-      </div>
-      <div className="mt-[20px] mb-[10px]">
-        <Button className="mr-[10px]" icon={<PlusOutlined />}>
-          新增
+        <Button onClick={() => getbody()} icon={<RedoOutlined />}>
+          重置
         </Button>
-        <Button icon={<EditOutlined />}>修改</Button>
+      </div>
+      <div className="mt-[20px] mb-[10px] flex">
+        <Add getbody={getbody} />
+        {/* <Button className="mr-[10px]" icon={<PlusOutlined />}>
+          新增
+        </Button> */}
+        <Button className="ml-[10px]" icon={<EditOutlined />}>
+          修改
+        </Button>
       </div>
       <Form form={form} component={false}>
         <Table

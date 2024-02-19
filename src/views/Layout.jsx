@@ -11,7 +11,7 @@ const App = () => {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
   const menu = JSON.parse(localStorage.getItem("user_menus"));
-  // console.log(menu);
+  console.log(menu);
   // label, key, children
 
   const items = (arr) => {
@@ -29,10 +29,10 @@ const App = () => {
   // console.log(cc);
   return (
     <Layout>
-      <Sider trigger={null} collapsible collapsed={collapsed}>
+      <Sider theme="light" trigger={null} collapsible collapsed={collapsed}>
         <div className="demo-logo-vertical" />
         <Menu
-          theme="dark"
+          theme="light"
           mode="inline"
           defaultSelectedKeys={["1"]}
           items={cc}

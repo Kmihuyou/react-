@@ -11,7 +11,7 @@ const Routes = () => {
 };
 
 const Router = () => {
-  console.log([...generateRoutes()]);
+  // console.log([...generateRoutes()]);
   const [routes, setRoutes] = useState([...generateRoutes()]);
   return (
     <RoutesContext.Provider value={[routes, setRoutes]}>
